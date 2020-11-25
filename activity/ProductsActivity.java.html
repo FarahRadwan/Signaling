@@ -1,0 +1,306 @@
+<html>
+<head>
+<title>ProductsActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #067d17;}
+.s3 { color: #1750eb;}
+.s4 { color: #8c8c8c; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ProductsActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">activity;</span>
+
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity;</span>
+
+<span class="s0">import </span><span class="s1">android.app.ProgressDialog;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle;</span>
+
+<span class="s0">import </span><span class="s1">java.util.ArrayList;</span>
+<span class="s0">import </span><span class="s1">java.util.HashMap;</span>
+<span class="s0">import </span><span class="s1">java.util.List;</span>
+<span class="s0">import </span><span class="s1">java.util.Map;</span>
+
+<span class="s0">import </span><span class="s1">org.json.JSONArray;</span>
+<span class="s0">import </span><span class="s1">org.json.JSONException;</span>
+<span class="s0">import </span><span class="s1">org.json.JSONObject;</span>
+<span class="s0">import </span><span class="s1">android.content.Context;</span>
+<span class="s0">import </span><span class="s1">android.os.AsyncTask;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle;</span>
+<span class="s0">import </span><span class="s1">android.util.Log;</span>
+<span class="s0">import </span><span class="s1">android.view.View;</span>
+<span class="s0">import </span><span class="s1">android.widget.AdapterView;</span>
+<span class="s0">import </span><span class="s1">android.widget.AdapterViewAnimator;</span>
+<span class="s0">import </span><span class="s1">android.widget.ListView;</span>
+<span class="s0">import </span><span class="s1">android.widget.ProgressBar;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast;</span>
+
+<span class="s0">import </span><span class="s1">com.android.volley.Request;</span>
+<span class="s0">import </span><span class="s1">com.android.volley.RequestQueue;</span>
+<span class="s0">import </span><span class="s1">com.android.volley.Response;</span>
+<span class="s0">import </span><span class="s1">com.android.volley.VolleyError;</span>
+<span class="s0">import </span><span class="s1">com.android.volley.toolbox.StringRequest;</span>
+<span class="s0">import </span><span class="s1">com.android.volley.toolbox.Volley;</span>
+
+<span class="s0">import </span><span class="s1">app.AppConfig;</span>
+<span class="s0">import </span><span class="s1">app.AppController;</span>
+<span class="s0">import </span><span class="s1">helper.HttpServicesClass;</span>
+<span class="s0">import </span><span class="s1">helper.ListAdapterClass;</span>
+<span class="s0">import </span><span class="s1">helper.SQLiteHandler;</span>
+<span class="s0">import </span><span class="s1">helper.SessionManager;</span>
+<span class="s0">import </span><span class="s1">helper.subjects;</span>
+<span class="s0">import </span><span class="s1">info.androidhive.loginandregistration.R;</span>
+
+<span class="s0">public class </span><span class="s1">ProductsActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+    <span class="s0">private static final </span><span class="s1">String TAG = ProductsActivity.</span><span class="s0">class</span><span class="s1">.getSimpleName();</span>
+    <span class="s1">ListView SubjectListView;</span>
+    <span class="s1">ProgressBar progressBarSubject;</span>
+    <span class="s0">private </span><span class="s1">ProgressDialog pDialog;</span>
+    <span class="s0">private </span><span class="s1">SessionManager session;</span>
+    <span class="s0">private </span><span class="s1">SQLiteHandler db;</span>
+    <span class="s1">String s;</span>
+    <span class="s1">String ServerURL = </span><span class="s2">&quot;http://192.168.1.8/android_login_api/product.php&quot;</span><span class="s1">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState)</span>
+    <span class="s1">{</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState);</span>
+
+        <span class="s1">setContentView(R.layout.activity_products);</span>
+
+        <span class="s1">SubjectListView = (ListView)findViewById(R.id.listview1);</span>
+
+        <span class="s1">progressBarSubject = (ProgressBar)findViewById(R.id.progressBar);</span>
+        <span class="s1">pDialog = </span><span class="s0">new </span><span class="s1">ProgressDialog(</span><span class="s0">this</span><span class="s1">);</span>
+        <span class="s1">pDialog.setCancelable(</span><span class="s0">false</span><span class="s1">);</span>
+
+
+        <span class="s0">new </span><span class="s1">GetHttpResponse(ProductsActivity.</span><span class="s0">this</span><span class="s1">).execute();</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private class </span><span class="s1">GetHttpResponse </span><span class="s0">extends </span><span class="s1">AsyncTask&lt;Void, Void, Void&gt;</span>
+    <span class="s1">{</span>
+        <span class="s0">public </span><span class="s1">Context context;</span>
+
+        <span class="s1">String ResultHolder;</span>
+
+        <span class="s1">List&lt;helper.subjects&gt; subjectsList;</span>
+
+        <span class="s0">public </span><span class="s1">GetHttpResponse(Context context)</span>
+        <span class="s1">{</span>
+            <span class="s0">this</span><span class="s1">.context = context;</span>
+        <span class="s1">}</span>
+
+        <span class="s1">@Override</span>
+        <span class="s0">protected void </span><span class="s1">onPreExecute()</span>
+        <span class="s1">{</span>
+            <span class="s0">super</span><span class="s1">.onPreExecute();</span>
+        <span class="s1">}</span>
+
+        <span class="s1">@Override</span>
+        <span class="s0">protected </span><span class="s1">Void doInBackground(Void... arg0)</span>
+        <span class="s1">{</span>
+          <span class="s1">HttpServicesClass  httpServiceObject = </span><span class="s0">new </span><span class="s1">HttpServicesClass(ServerURL);</span>
+            <span class="s0">try</span>
+            <span class="s1">{</span>
+                <span class="s1">httpServiceObject.ExecutePostRequest();</span>
+
+                <span class="s0">if</span><span class="s1">(httpServiceObject.getResponseCode() == </span><span class="s3">200</span><span class="s1">)</span>
+                <span class="s1">{</span>
+                    <span class="s1">ResultHolder = httpServiceObject.getResponse();</span>
+                 <span class="s1">System.out.println( </span><span class="s2">&quot;resultholder=&quot;</span><span class="s1">+ResultHolder);</span>
+
+                    <span class="s0">if</span><span class="s1">(ResultHolder != </span><span class="s0">null</span><span class="s1">)</span>
+                    <span class="s1">{</span>
+                        <span class="s1">JSONArray jsonArray = </span><span class="s0">null</span><span class="s1">;</span>
+
+                        <span class="s0">try </span><span class="s1">{</span>
+
+                            <span class="s1">jsonArray = </span><span class="s0">new </span><span class="s1">JSONArray(ResultHolder);</span>
+
+                            <span class="s1">JSONObject jsonObject;</span>
+
+                            <span class="s1">subjects subjects;</span>
+
+                            <span class="s1">subjectsList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;subjects&gt;();</span>
+                            <span class="s1">System.out.println(</span><span class="s2">&quot;jsonarray&quot;</span><span class="s1">+subjectsList);</span>
+
+                            <span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s3">0</span><span class="s1">; i&lt;jsonArray.length(); i++)</span>
+                            <span class="s1">{</span>
+                                <span class="s1">subjects = </span><span class="s0">new </span><span class="s1">subjects();</span>
+
+                                <span class="s1">jsonObject = jsonArray.getJSONObject(i);</span>
+                               <span class="s4">//subjects s=new subjects(jsonObject.getString(&quot;name&quot;),jsonObject.getString(&quot;description&quot;),jsonObject.getString(&quot;image_url&quot;));</span>
+                                <span class="s1">subjects.subjectName = jsonObject.getString(</span><span class="s2">&quot;name&quot;</span><span class="s1">);</span>
+                                <span class="s1">System.out.println(</span><span class="s2">&quot;subj&quot;</span><span class="s1">+subjects.subjectName);</span>
+                                <span class="s1">subjects.description = jsonObject.getString(</span><span class="s2">&quot;description&quot;</span><span class="s1">);</span>
+                                <span class="s1">System.out.println(</span><span class="s2">&quot;subj&quot;</span><span class="s1">+subjects.description);</span>
+                                <span class="s1">subjects.image_url = jsonObject.getString(</span><span class="s2">&quot;image_url&quot;</span><span class="s1">);</span>
+                                <span class="s1">subjects.id= Integer.parseInt(jsonObject.getString(</span><span class="s2">&quot;product_id&quot;</span><span class="s1">));</span>
+                                <span class="s1">System.out.println(</span><span class="s2">&quot;id&quot;</span><span class="s1">+subjects.id);</span>
+                                <span class="s1">System.out.println(</span><span class="s2">&quot;subj&quot;</span><span class="s1">+subjects.image_url);</span>
+
+
+
+                                <span class="s1">subjectsList.add(subjects);</span>
+                            <span class="s1">}</span>
+                        <span class="s1">}</span>
+                        <span class="s0">catch </span><span class="s1">(JSONException e) {</span>
+                            <span class="s4">// TODO Auto-generated catch block</span>
+                            <span class="s1">e.printStackTrace();</span>
+                            <span class="s1">System.out.println(</span><span class="s2">&quot;catch&quot;</span><span class="s1">);</span>
+                        <span class="s1">}</span>
+                    <span class="s1">}</span>
+                <span class="s1">}</span>
+                <span class="s0">else</span>
+                <span class="s1">{</span>
+                    <span class="s1">Toast.makeText(context, httpServiceObject.getErrorMessage(), Toast.LENGTH_SHORT).show();</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+            <span class="s0">catch </span><span class="s1">(Exception e)</span>
+            <span class="s1">{</span>
+                <span class="s4">// TODO Auto-generated catch block</span>
+                <span class="s1">e.printStackTrace();</span>
+            <span class="s1">}</span>
+            <span class="s0">return null</span><span class="s1">;</span>
+        <span class="s1">}</span>
+
+        <span class="s1">@Override</span>
+        <span class="s0">protected void </span><span class="s1">onPostExecute(Void result)</span>
+
+        <span class="s1">{</span>
+            <span class="s1">progressBarSubject.setVisibility(View.GONE);</span>
+
+            <span class="s1">SubjectListView.setVisibility(View.VISIBLE);</span>
+
+            <span class="s0">if</span><span class="s1">(subjectsList != </span><span class="s0">null</span><span class="s1">)</span>
+            <span class="s1">{</span>
+                <span class="s1">ListAdapterClass adapter = </span><span class="s0">new </span><span class="s1">ListAdapterClass(subjectsList, context);</span>
+
+                <span class="s1">SubjectListView.setAdapter(adapter);</span>
+                <span class="s1">SubjectListView.setOnItemClickListener(</span><span class="s0">new </span><span class="s1">AdapterView.OnItemClickListener() {</span>
+                    <span class="s1">@Override</span>
+                    <span class="s0">public void </span><span class="s1">onItemClick(AdapterView&lt;?&gt; adapterView, View view, </span><span class="s0">int </span><span class="s1">i, </span><span class="s0">long </span><span class="s1">id) {</span>
+                    <span class="s1">String    product_id = String.valueOf(subjectsList.get(i).id);</span>
+                        <span class="s1">System.out.println(product_id);</span>
+                       <span class="s0">long </span><span class="s1">f= adapterView.getItemIdAtPosition(i);</span>
+                       <span class="s1">checkproduct(product_id);</span>
+
+
+<span class="s4">//                        Intent intent = new Intent(ProductsActivity.this, DetailsActivity.class);</span>
+<span class="s4">//                        startActivity(intent);</span>
+<span class="s4">//                        finish();</span>
+                    <span class="s1">}</span>
+                <span class="s1">});</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+    <span class="s0">private void </span><span class="s1">checkproduct(</span><span class="s0">final </span><span class="s1">String product_id) {</span>
+        <span class="s4">// Tag used to cancel the request</span>
+       <span class="s4">/// f=f+1;</span>
+        <span class="s1">String tag_string_req = </span><span class="s2">&quot;req_login&quot;</span><span class="s1">;</span>
+
+
+
+        <span class="s1">StringRequest strReq = </span><span class="s0">new </span><span class="s1">StringRequest(Request.Method.POST,</span>
+                <span class="s1">AppConfig.URL_shopproduct, </span><span class="s0">new </span><span class="s1">Response.Listener&lt;String&gt;() {</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onResponse(String response) {</span>
+                <span class="s1">Log.d(TAG, </span><span class="s2">&quot;shopproduct Response: &quot; </span><span class="s1">+ response.toString());</span>
+                <span class="s1">hideDialog();</span>
+
+                <span class="s0">try </span><span class="s1">{</span>
+                    <span class="s1">JSONObject jObj = </span><span class="s0">new </span><span class="s1">JSONObject(response);</span>
+                    <span class="s1">JSONArray x=</span><span class="s0">new </span><span class="s1">JSONArray(response);</span>
+                    <span class="s0">boolean </span><span class="s1">error = jObj.getBoolean(</span><span class="s2">&quot;error&quot;</span><span class="s1">);</span>
+
+                    <span class="s4">// Check for error node in json</span>
+                    <span class="s0">if </span><span class="s1">(!error) {</span>
+                        <span class="s4">// user successfully logged in</span>
+                        <span class="s4">// Create login session</span>
+                       <span class="s4">// session.setLogin(true);</span>
+
+                        <span class="s4">// Now store the user in SQLite</span>
+                       <span class="s4">// String uid = jObj.getString(&quot;uid&quot;);</span>
+
+                        <span class="s1">JSONObject user = jObj.getJSONObject(</span><span class="s2">&quot;user&quot;</span><span class="s1">);</span>
+                        <span class="s1">String shop_id = user.getString(</span><span class="s2">&quot;shop_id&quot;</span><span class="s1">);</span>
+                        <span class="s1">System.out.println(</span><span class="s2">&quot;shop_id=&quot;</span><span class="s1">+shop_id);</span>
+                        <span class="s1">String price = user.getString(</span><span class="s2">&quot;price&quot;</span><span class="s1">);</span>
+                        <span class="s1">String availableSpecialoffers = user.getString(</span><span class="s2">&quot;available Special offers&quot;</span><span class="s1">);</span>
+
+
+<span class="s4">//                        String created_at = user</span>
+<span class="s4">//                                .getString(&quot;created_at&quot;);</span>
+
+                        <span class="s4">// Inserting row in users table</span>
+
+
+                        <span class="s4">// Launch main activity</span>
+                        <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(ProductsActivity.</span><span class="s0">this</span><span class="s1">,</span>
+                                <span class="s1">DetailsActivity.</span><span class="s0">class</span><span class="s1">);</span>
+                        <span class="s1">startActivity(intent);</span>
+                        <span class="s1">finish();</span>
+                    <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+                        <span class="s4">// Error in login. Get the error message</span>
+                        <span class="s1">String errorMsg = jObj.getString(</span><span class="s2">&quot;error_msg&quot;</span><span class="s1">);</span>
+                        <span class="s1">Toast.makeText(getApplicationContext(),</span>
+                                <span class="s1">errorMsg, Toast.LENGTH_LONG).show();</span>
+                    <span class="s1">}</span>
+                <span class="s1">} </span><span class="s0">catch </span><span class="s1">(JSONException e) {</span>
+                    <span class="s4">// JSON error</span>
+                    <span class="s1">e.printStackTrace();</span>
+                    <span class="s1">Toast.makeText(getApplicationContext(), </span><span class="s2">&quot;Json error: &quot; </span><span class="s1">+ e.getMessage(), Toast.LENGTH_LONG).show();</span>
+                <span class="s1">}</span>
+
+            <span class="s1">}</span>
+        <span class="s1">}, </span><span class="s0">new </span><span class="s1">Response.ErrorListener() {</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onErrorResponse(VolleyError error) {</span>
+                <span class="s1">Log.e(TAG, </span><span class="s2">&quot;Login Error: &quot; </span><span class="s1">+ error.getMessage());</span>
+                <span class="s1">Toast.makeText(getApplicationContext(),</span>
+                        <span class="s1">error.getMessage(), Toast.LENGTH_LONG).show();</span>
+                <span class="s1">hideDialog();</span>
+            <span class="s1">}</span>
+        <span class="s1">}) {</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">protected </span><span class="s1">Map&lt;String, String&gt; getParams() {</span>
+                <span class="s4">// Posting parameters to login url</span>
+                <span class="s1">Map&lt;String, String&gt; params = </span><span class="s0">new </span><span class="s1">HashMap&lt;String, String&gt;();</span>
+                <span class="s1">params.put(</span><span class="s2">&quot;product_id&quot;</span><span class="s1">,product_id);</span>
+                <span class="s0">return </span><span class="s1">params;</span>
+            <span class="s1">}</span>
+
+
+
+        <span class="s1">};</span>
+
+        <span class="s4">// Adding request to request queue</span>
+       <span class="s4">// RequestQueue rq= Volley.newRequestQueue(ProductsActivity.this);</span>
+        <span class="s4">//rq.add(strReq);</span>
+        <span class="s1">AppController.getInstance().addToRequestQueue(strReq, tag_string_req);</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">showDialog() {</span>
+        <span class="s0">if </span><span class="s1">(!pDialog.isShowing())</span>
+            <span class="s1">pDialog.show();</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">hideDialog() {</span>
+        <span class="s0">if </span><span class="s1">(pDialog.isShowing())</span>
+            <span class="s1">pDialog.dismiss();</span>
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>

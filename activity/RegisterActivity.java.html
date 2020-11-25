@@ -1,0 +1,242 @@
+<html>
+<head>
+<title>RegisterActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #8c8c8c; font-style: italic;}
+.s3 { color: #067d17;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+RegisterActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">activity;</span>
+<span class="s0">import </span><span class="s1">android.app.Activity;</span>
+<span class="s0">import </span><span class="s1">android.app.ProgressDialog;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle;</span>
+<span class="s0">import </span><span class="s1">android.util.Log;</span>
+<span class="s0">import </span><span class="s1">android.view.View;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button;</span>
+<span class="s0">import </span><span class="s1">android.widget.EditText;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast;</span>
+
+<span class="s0">import </span><span class="s1">com.android.volley.Request.Method;</span>
+<span class="s0">import </span><span class="s1">com.android.volley.Response;</span>
+<span class="s0">import </span><span class="s1">com.android.volley.VolleyError;</span>
+<span class="s0">import </span><span class="s1">com.android.volley.toolbox.StringRequest;</span>
+
+<span class="s0">import </span><span class="s1">org.json.JSONException;</span>
+<span class="s0">import </span><span class="s1">org.json.JSONObject;</span>
+
+<span class="s0">import </span><span class="s1">java.util.HashMap;</span>
+<span class="s0">import </span><span class="s1">java.util.Map;</span>
+
+<span class="s0">import </span><span class="s1">activity.LoginActivity;</span>
+<span class="s0">import </span><span class="s1">activity.MainActivity;</span>
+<span class="s0">import </span><span class="s1">app.AppConfig;</span>
+<span class="s0">import </span><span class="s1">app.AppController;</span>
+<span class="s0">import </span><span class="s1">helper.SQLiteHandler;</span>
+<span class="s0">import </span><span class="s1">helper.SessionManager;</span>
+<span class="s0">import </span><span class="s1">info.androidhive.loginandregistration.R;</span>
+
+
+<span class="s0">public class </span><span class="s1">RegisterActivity </span><span class="s0">extends </span><span class="s1">Activity {</span>
+    <span class="s0">private static final </span><span class="s1">String TAG = RegisterActivity.</span><span class="s0">class</span><span class="s1">.getSimpleName();</span>
+    <span class="s0">private </span><span class="s1">Button btnRegister;</span>
+    <span class="s0">private </span><span class="s1">Button btnLinkToLogin;</span>
+    <span class="s0">private </span><span class="s1">EditText inputFullName;</span>
+    <span class="s0">private </span><span class="s1">EditText inputEmail;</span>
+    <span class="s0">private </span><span class="s1">EditText inputPassword;</span>
+    <span class="s0">private </span><span class="s1">ProgressDialog pDialog;</span>
+    <span class="s0">private </span><span class="s1">SessionManager session;</span>
+    <span class="s0">private </span><span class="s1">SQLiteHandler db;</span>
+    <span class="s0">private </span><span class="s1">EditText phoneNumber;</span>
+    <span class="s0">private </span><span class="s1">EditText address;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState);</span>
+        <span class="s1">setContentView(R.layout.activity_register);</span>
+
+        <span class="s1">inputFullName = (EditText) findViewById(R.id.name);</span>
+        <span class="s1">inputEmail = (EditText) findViewById(R.id.email);</span>
+        <span class="s1">inputPassword = (EditText) findViewById(R.id.password);</span>
+        <span class="s1">btnRegister = (Button) findViewById(R.id.btnRegister);</span>
+        <span class="s1">btnLinkToLogin = (Button) findViewById(R.id.btnLinkToLoginScreen);</span>
+         <span class="s1">phoneNumber = (EditText) findViewById(R.id.phoneNumber);</span>
+         <span class="s1">address =(EditText) findViewById(R.id.address);</span>
+
+        <span class="s2">// Progress dialog</span>
+        <span class="s1">pDialog = </span><span class="s0">new </span><span class="s1">ProgressDialog(</span><span class="s0">this</span><span class="s1">);</span>
+        <span class="s1">pDialog.setCancelable(</span><span class="s0">false</span><span class="s1">);</span>
+
+        <span class="s2">// Session manager</span>
+        <span class="s1">session = </span><span class="s0">new </span><span class="s1">SessionManager(getApplicationContext());</span>
+
+        <span class="s2">// SQLite database handler</span>
+        <span class="s1">db = </span><span class="s0">new </span><span class="s1">SQLiteHandler(getApplicationContext());</span>
+
+        <span class="s2">// Check if user is already logged in or not</span>
+        <span class="s0">if </span><span class="s1">(session.isLoggedIn()) {</span>
+            <span class="s2">// User is already logged in. Take him to main activity</span>
+            <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(RegisterActivity.</span><span class="s0">this</span><span class="s1">,</span>
+                    <span class="s1">MainActivity.</span><span class="s0">class</span><span class="s1">);</span>
+            <span class="s1">startActivity(intent);</span>
+            <span class="s1">finish();</span>
+        <span class="s1">}</span>
+
+        <span class="s2">// Register Button Click event</span>
+        <span class="s1">btnRegister.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                <span class="s1">String name = inputFullName.getText().toString().trim();</span>
+                <span class="s1">String email = inputEmail.getText().toString().trim();</span>
+                <span class="s1">String password = inputPassword.getText().toString().trim();</span>
+                <span class="s1">String phone = phoneNumber.getText().toString().trim();</span>
+                <span class="s1">String addrs = address.getText().toString().trim();</span>
+
+                <span class="s0">if </span><span class="s1">(!name.isEmpty() &amp;&amp; !email.isEmpty() &amp;&amp; !password.isEmpty() &amp;&amp; !phone.isEmpty() &amp;&amp; !addrs.isEmpty()) {</span>
+                    <span class="s1">registerUser(name, email, password,phone,addrs);</span>
+                    <span class="s1">Toast.makeText(getApplicationContext(),</span>
+                            <span class="s3">&quot;entered!&quot;</span><span class="s1">, Toast.LENGTH_LONG)</span>
+                            <span class="s1">.show();</span>
+                <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+                    <span class="s1">Toast.makeText(getApplicationContext(),</span>
+                            <span class="s3">&quot;Please enter your details!&quot;</span><span class="s1">, Toast.LENGTH_LONG)</span>
+                            <span class="s1">.show();</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">});</span>
+
+        <span class="s2">// Link to Login Screen</span>
+        <span class="s1">btnLinkToLogin.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+
+            <span class="s0">public void </span><span class="s1">onClick(View view) {</span>
+                <span class="s1">Intent i = </span><span class="s0">new </span><span class="s1">Intent(getApplicationContext(),</span>
+                        <span class="s1">LoginActivity.</span><span class="s0">class</span><span class="s1">);</span>
+                <span class="s1">startActivity(i);</span>
+                <span class="s1">finish();</span>
+            <span class="s1">}</span>
+        <span class="s1">});</span>
+
+    <span class="s1">}</span>
+
+    <span class="s2">/**</span>
+     <span class="s2">* Function to store user in MySQL database will post params(tag, name,</span>
+     <span class="s2">* email, password) to register url</span>
+     <span class="s2">* */</span>
+    <span class="s0">private void </span><span class="s1">registerUser(</span><span class="s0">final </span><span class="s1">String name, </span><span class="s0">final </span><span class="s1">String email,</span>
+                              <span class="s0">final </span><span class="s1">String password,</span><span class="s0">final </span><span class="s1">String phone,</span><span class="s0">final </span><span class="s1">String addrs) {</span>
+        <span class="s2">// Tag used to cancel the request</span>
+        <span class="s1">String tag_string_req = </span><span class="s3">&quot;req_register&quot;</span><span class="s1">;</span>
+
+        <span class="s1">pDialog.setMessage(</span><span class="s3">&quot;Registering ...&quot;</span><span class="s1">);</span>
+        <span class="s1">showDialog();</span>
+
+        <span class="s1">StringRequest strReq = </span><span class="s0">new </span><span class="s1">StringRequest(Method.POST,</span>
+                <span class="s1">AppConfig.URL_REGISTER, </span><span class="s0">new </span><span class="s1">Response.Listener&lt;String&gt;() {</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onResponse(String response) {</span>
+                <span class="s1">Log.d(TAG, </span><span class="s3">&quot;Register Response: &quot; </span><span class="s1">+ response.toString());</span>
+                <span class="s1">hideDialog();</span>
+
+                <span class="s0">try </span><span class="s1">{</span>
+
+                    <span class="s1">JSONObject jObj = </span><span class="s0">new </span><span class="s1">JSONObject(response);</span>
+                    <span class="s1">Toast.makeText(getApplicationContext(),</span>
+                            <span class="s3">&quot;error&quot;</span><span class="s1">, Toast.LENGTH_LONG)</span>
+                            <span class="s1">.show();</span>
+                    <span class="s0">boolean </span><span class="s1">error = jObj.getBoolean(</span><span class="s3">&quot;error&quot;</span><span class="s1">);</span>
+
+
+                    <span class="s0">if </span><span class="s1">(!error) {</span>
+
+                        <span class="s2">// User successfully stored in MySQL</span>
+                        <span class="s2">// Now store the user in sqlite</span>
+                        <span class="s1">String uid = jObj.getString(</span><span class="s3">&quot;uid&quot;</span><span class="s1">);</span>
+                        <span class="s1">JSONObject user = jObj.getJSONObject(</span><span class="s3">&quot;user&quot;</span><span class="s1">);</span>
+                        <span class="s1">String name = user.getString(</span><span class="s3">&quot;name&quot;</span><span class="s1">);</span>
+                        <span class="s1">String email = user.getString(</span><span class="s3">&quot;email&quot;</span><span class="s1">);</span>
+                        <span class="s1">String phoneNumber = user.getString(</span><span class="s3">&quot;phoneNumber&quot;</span><span class="s1">);</span>
+                        <span class="s1">String address = user.getString(</span><span class="s3">&quot;address&quot;</span><span class="s1">);</span>
+
+
+                        <span class="s1">String created_at = user</span>
+                                <span class="s1">.getString(</span><span class="s3">&quot;created_at&quot;</span><span class="s1">);</span>
+
+                        <span class="s2">// Inserting row in users table</span>
+                        <span class="s1">db.addUser(name, email,uid, created_at);</span>
+
+                        <span class="s1">Toast.makeText(getApplicationContext(), </span><span class="s3">&quot;User successfully registered. Try login now!&quot;</span><span class="s1">, Toast.LENGTH_LONG).show();</span>
+
+                        <span class="s2">// Launch login activity</span>
+                        <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(</span>
+                                <span class="s1">RegisterActivity.</span><span class="s0">this</span><span class="s1">,</span>
+                                <span class="s1">LoginActivity.</span><span class="s0">class</span><span class="s1">);</span>
+                        <span class="s1">startActivity(intent);</span>
+                        <span class="s1">finish();</span>
+                    <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+
+
+                        <span class="s2">// Error occurred in registration. Get the error</span>
+                        <span class="s2">// message</span>
+                        <span class="s1">String errorMsg = jObj.getString(</span><span class="s3">&quot;error_msg&quot;</span><span class="s1">);</span>
+                        <span class="s1">Toast.makeText(getApplicationContext(),</span>
+                                <span class="s1">errorMsg, Toast.LENGTH_LONG).show();</span>
+                    <span class="s1">}</span>
+                <span class="s1">} </span><span class="s0">catch </span><span class="s1">(JSONException e) {</span>
+
+                    <span class="s1">Log.d(TAG, </span><span class="s3">&quot;catch&quot; </span><span class="s1">+e.getMessage()) ;</span>
+                    <span class="s1">e.printStackTrace();</span>
+                <span class="s1">}</span>
+
+            <span class="s1">}</span>
+        <span class="s1">}, </span><span class="s0">new </span><span class="s1">Response.ErrorListener() {</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onErrorResponse(VolleyError error) {</span>
+                <span class="s1">Log.e(TAG, </span><span class="s3">&quot;Registration Error: &quot; </span><span class="s1">+ error.getMessage());</span>
+                <span class="s1">Toast.makeText(getApplicationContext(),</span>
+                        <span class="s1">error.getMessage(), Toast.LENGTH_LONG).show();</span>
+                <span class="s1">hideDialog();</span>
+            <span class="s1">}</span>
+        <span class="s1">}) {</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">protected </span><span class="s1">Map&lt;String, String&gt; getParams() {</span>
+
+                <span class="s2">// Posting params to register url</span>
+                <span class="s1">Map&lt;String, String&gt; params = </span><span class="s0">new </span><span class="s1">HashMap&lt;String, String&gt;();</span>
+                <span class="s1">params.put(</span><span class="s3">&quot;name&quot;</span><span class="s1">, name);</span>
+                <span class="s1">params.put(</span><span class="s3">&quot;email&quot;</span><span class="s1">, email);</span>
+                <span class="s1">params.put(</span><span class="s3">&quot;password&quot;</span><span class="s1">, password);</span>
+                <span class="s1">params.put(</span><span class="s3">&quot;phoneNumber&quot;</span><span class="s1">, phone);</span>
+                <span class="s1">params.put(</span><span class="s3">&quot;address&quot;</span><span class="s1">, addrs);</span>
+
+                <span class="s0">return </span><span class="s1">params;</span>
+            <span class="s1">}</span>
+
+        <span class="s1">};</span>
+
+        <span class="s2">// Adding request to request queue</span>
+        <span class="s1">AppController.getInstance().addToRequestQueue(strReq, tag_string_req);</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">showDialog() {</span>
+        <span class="s0">if </span><span class="s1">(!pDialog.isShowing())</span>
+            <span class="s1">pDialog.show();</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">hideDialog() {</span>
+        <span class="s0">if </span><span class="s1">(pDialog.isShowing())</span>
+            <span class="s1">pDialog.dismiss();</span>
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>

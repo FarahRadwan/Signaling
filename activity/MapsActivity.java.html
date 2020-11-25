@@ -1,0 +1,95 @@
+<html>
+<head>
+<title>MapsActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #1750eb;}
+.s3 { color: #067d17;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MapsActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">activity;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull;</span>
+<span class="s0">import </span><span class="s1">androidx.core.app.ActivityCompat;</span>
+<span class="s0">import </span><span class="s1">androidx.fragment.app.FragmentActivity;</span>
+
+<span class="s0">import </span><span class="s1">android.Manifest;</span>
+<span class="s0">import </span><span class="s1">android.content.pm.PackageManager;</span>
+<span class="s0">import </span><span class="s1">android.location.Location;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast;</span>
+
+<span class="s0">import </span><span class="s1">com.google.android.gms.location.FusedLocationProviderClient;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.location.LocationServices;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.maps.CameraUpdateFactory;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.maps.GoogleMap;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.maps.OnMapReadyCallback;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.maps.SupportMapFragment;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.LatLng;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.MarkerOptions;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnSuccessListener;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.Task;</span>
+
+<span class="s0">import </span><span class="s1">info.androidhive.loginandregistration.R;</span>
+
+<span class="s0">public class </span><span class="s1">MapsActivity </span><span class="s0">extends </span><span class="s1">FragmentActivity </span><span class="s0">implements </span><span class="s1">OnMapReadyCallback {</span>
+    <span class="s1">Location currentLocation;</span>
+    <span class="s1">FusedLocationProviderClient fusedLocationProviderClient;</span>
+    <span class="s0">private static final int </span><span class="s1">REQUEST_CODE = </span><span class="s2">101</span><span class="s1">;</span>
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState);</span>
+        <span class="s1">setContentView(R.layout.activity_maps);</span>
+        <span class="s1">fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(</span><span class="s0">this</span><span class="s1">);</span>
+        <span class="s1">fetchLocation();</span>
+    <span class="s1">}</span>
+    <span class="s0">private void </span><span class="s1">fetchLocation() {</span>
+        <span class="s0">if </span><span class="s1">(ActivityCompat.checkSelfPermission(</span>
+                <span class="s0">this</span><span class="s1">, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &amp;&amp; ActivityCompat.checkSelfPermission(</span>
+                <span class="s0">this</span><span class="s1">, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {</span>
+            <span class="s1">ActivityCompat.requestPermissions(</span><span class="s0">this</span><span class="s1">, </span><span class="s0">new </span><span class="s1">String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);</span>
+            <span class="s0">return</span><span class="s1">;</span>
+        <span class="s1">}</span>
+        <span class="s1">Task&lt;Location&gt; task = fusedLocationProviderClient.getLastLocation();</span>
+        <span class="s1">task.addOnSuccessListener(</span><span class="s0">new </span><span class="s1">OnSuccessListener&lt;Location&gt;() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onSuccess(Location location) {</span>
+                <span class="s0">if </span><span class="s1">(location != </span><span class="s0">null</span><span class="s1">) {</span>
+                    <span class="s1">currentLocation = location;</span>
+                    <span class="s1">Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + </span><span class="s3">&quot;&quot; </span><span class="s1">+ currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();</span>
+                    <span class="s1">SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);</span>
+                    <span class="s0">assert </span><span class="s1">supportMapFragment != </span><span class="s0">null</span><span class="s1">;</span>
+                    <span class="s1">supportMapFragment.getMapAsync(MapsActivity.</span><span class="s0">this</span><span class="s1">);</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">});</span>
+    <span class="s1">}</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onMapReady(GoogleMap googleMap) {</span>
+        <span class="s1">LatLng latLng = </span><span class="s0">new </span><span class="s1">LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());</span>
+        <span class="s1">MarkerOptions markerOptions = </span><span class="s0">new </span><span class="s1">MarkerOptions().position(latLng).title(</span><span class="s3">&quot;I am here!&quot;</span><span class="s1">);</span>
+        <span class="s1">googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));</span>
+        <span class="s1">googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, </span><span class="s2">5</span><span class="s1">));</span>
+        <span class="s1">googleMap.addMarker(markerOptions);</span>
+    <span class="s1">}</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onRequestPermissionsResult(</span><span class="s0">int </span><span class="s1">requestCode, @NonNull String[] permissions, @NonNull </span><span class="s0">int</span><span class="s1">[] grantResults) {</span>
+        <span class="s0">switch </span><span class="s1">(requestCode) {</span>
+            <span class="s0">case </span><span class="s1">REQUEST_CODE:</span>
+                <span class="s0">if </span><span class="s1">(grantResults.length &gt; </span><span class="s2">0 </span><span class="s1">&amp;&amp; grantResults[</span><span class="s2">0</span><span class="s1">] == PackageManager.PERMISSION_GRANTED) {</span>
+                    <span class="s1">fetchLocation();</span>
+                <span class="s1">}</span>
+                <span class="s0">break</span><span class="s1">;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>
