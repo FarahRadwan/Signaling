@@ -1,16 +1,16 @@
 package helper;
 
-import android.content.Context;
-import java.util.List;
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
 
-import activity.DetailsActivity;
+import java.util.List;
+
 import info.androidhive.loginandregistration.R;
 
 public class ListAdaptershop extends BaseAdapter {

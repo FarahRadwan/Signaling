@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name="app.AppController"
@@ -25,8 +26,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="activity.DetailsActivity1"></activity>
-        <activity android:name="activity.DetailsActivity" />
+        <activity android:name="activity.CartActivity" />
+        <activity android:name="activity.DetailsActivity1" />
         <activity android:name="activity.ProductsActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -63,6 +64,7 @@
             android:name="activity.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop" />
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

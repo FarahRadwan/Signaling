@@ -26,8 +26,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import activity.MainActivity;
-import activity.RegisterActivity;
 import app.AppConfig;
 import app.AppController;
 import helper.SQLiteHandler;
@@ -136,6 +134,8 @@ public class LoginActivity extends Activity {
 
                         // Now store the user in SQLite
                         String uid = jObj.getString("uid");
+                        //String id = jObj.getString("id");
+                       // System.out.println(id+"id");
 
                         JSONObject user = jObj.getJSONObject("user");
                         String name = user.getString("name");
@@ -147,6 +147,10 @@ public class LoginActivity extends Activity {
                         db.addUser(name, email, uid, created_at);
 
                         // Launch main activity
+                        System.out.println(email);
+                        Intent intent1=new Intent(getApplicationContext(),DetailsActivity1.class);
+                        intent1.putExtra("email",email);
+
                         Intent intent = new Intent(LoginActivity.this,
                                 MainActivity.class);
                         startActivity(intent);

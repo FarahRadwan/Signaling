@@ -17,6 +17,7 @@ public class MainActivity extends Activity {
     private TextView txtEmail;
     private Button btnLogout;
     private Button btnshop;
+    private Button btncart;
     private Button currentLocation;
     private SQLiteHandler db;
     private SessionManager session;
@@ -29,6 +30,7 @@ public class MainActivity extends Activity {
         txtEmail = (TextView) findViewById(R.id.email);
         btnLogout = (Button) findViewById(R.id.btnLogout);
         btnshop = (Button) findViewById(R.id.btnshop);
+        btncart = (Button) findViewById(R.id.btncart);
         currentLocation = (Button) findViewById(R.id.currentLocation);
 
         // SqLite database handler
@@ -46,6 +48,8 @@ public class MainActivity extends Activity {
 
         String name = user.get("name");
         String email = user.get("email");
+        String id=user.get("id");
+      //  System.out.println(id+"id");
 
         // Displaying the user details on the screen
         txtName.setText(name);
@@ -66,6 +70,14 @@ public class MainActivity extends Activity {
 
             public void onClick(View v) {
                 shop();
+
+            }
+        });
+        btncart.setOnClickListener(new View.OnClickListener() {
+
+
+            public void onClick(View v) {
+                cart();
 
             }
         });
@@ -99,7 +111,7 @@ public class MainActivity extends Activity {
         // Launching the maps activity
         Intent intent = new Intent(MainActivity.this,MapsActivity.class);
         startActivity(intent);
-        finish();
+      //  finish();
     }
     private void shop() {
 
@@ -107,7 +119,15 @@ public class MainActivity extends Activity {
         // Launching the maps activity
         Intent intent = new Intent(MainActivity.this,ProductsActivity.class);
         startActivity(intent);
-        finish();
+        //finish();
+    }
+    private void cart() {
+
+
+        // Launching the maps activity
+        Intent intent = new Intent(MainActivity.this,CartActivity.class);
+        startActivity(intent);
+        //finish();
     }
 
 

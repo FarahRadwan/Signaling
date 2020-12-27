@@ -9,4 +9,6 @@ public class shopprod {
     public String longitude;
     public String latitude;
     public String distance;
+    public String shopproduct_id;
+
 }

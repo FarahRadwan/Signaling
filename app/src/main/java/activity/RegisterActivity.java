@@ -20,8 +20,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import activity.LoginActivity;
-import activity.MainActivity;
 import app.AppConfig;
 import app.AppController;
 import helper.SQLiteHandler;
@@ -29,7 +27,10 @@ import helper.SessionManager;
 import info.androidhive.loginandregistration.R;
 
 
-public class RegisterActivity extends Activity {
+public class
+
+
+RegisterActivity extends Activity {
     private static final String TAG = RegisterActivity.class.getSimpleName();
     private Button btnRegister;
     private Button btnLinkToLogin;
@@ -41,6 +42,7 @@ public class RegisterActivity extends Activity {
     private SQLiteHandler db;
     private EditText phoneNumber;
     private EditText address;
+    public String email;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +80,7 @@ public class RegisterActivity extends Activity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 String name = inputFullName.getText().toString().trim();
-                String email = inputEmail.getText().toString().trim();
+                 email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
                 String phone = phoneNumber.getText().toString().trim();
                 String addrs = address.getText().toString().trim();
@@ -143,15 +145,13 @@ public class RegisterActivity extends Activity {
                         // User successfully stored in MySQL
                         // Now store the user in sqlite
                         String uid = jObj.getString("uid");
+                       // String id = jObj.getString("id");
                         JSONObject user = jObj.getJSONObject("user");
                         String name = user.getString("name");
                         String email = user.getString("email");
                         String phoneNumber = user.getString("phoneNumber");
                         String address = user.getString("address");
-
-
-                        String created_at = user
-                                .getString("created_at");
+                        String created_at = user.getString("created_at");
 
                         // Inserting row in users table
                         db.addUser(name, email,uid, created_at);
