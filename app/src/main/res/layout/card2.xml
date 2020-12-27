@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/card"
+    android:id="@+id/card2"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="6dp"
     android:elevation="6dp"
@@ -29,48 +29,22 @@
                 android:text="Subtitle here"
                 android:textStyle="bold" />
             <TextView
-                android:id="@+id/price"
+                android:id="@+id/productname"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Subtitle here"
                 android:textStyle="bold" />
-            <TextView
-                android:id="@+id/specialoffer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Subtitle here"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/distance"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Subtitle here"
-                android:textStyle="bold" />
+
             <Button
-                android:id="@+id/addcart"
+                android:id="@+id/remove"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dip"
                 android:background="@color/bg_login"
-                android:text="Add to cart"
+                android:text="Remove"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="15dp" />
-
-
-            <Button
-                android:id="@+id/navigate"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dip"
-                android:background="@color/bg_login"
-                android:text="Navigate"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="15dp" />
-
-
-
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

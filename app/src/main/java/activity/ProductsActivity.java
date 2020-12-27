@@ -113,7 +113,7 @@ public class ProductsActivity extends AppCompatActivity {
 
                                 jsonObject = jsonArray.getJSONObject(i);
                                 //subjects s=new subjects(jsonObject.getString("name"),jsonObject.getString("description"),jsonObject.getString("image_url"));
-                                subjects.subjectName = jsonObject.getString("name");
+                                subjects.subjectName = jsonObject.getString("productname");
                                 System.out.println("subj" + subjects.subjectName);
                                 subjects.description = jsonObject.getString("description");
                                 System.out.println("subj" + subjects.description);
@@ -156,145 +156,7 @@ public class ProductsActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
                         product_id = String.valueOf(subjectsList.get(i).id);
                         startActivity(intent2);
-                        finish();
-//                        System.out.println(product_id);
-//                        String tag_string_req = "req_login";
-//                        StringRequest strReq = new StringRequest(Request.Method.POST,
-//                                AppConfig.URL_shopproduct, new Response.Listener<String>() {
-//
-//
-//
-//
-//
-//                            @Override
-//                            public void onResponse(String response) {
-//                                Log.d(TAG, "shopproduct Response: " + response.toString());
-//                                hideDialog();
-//
-//                                try {
-//
-//                                    System.out.println("1");
-//                                    JSONArray x = new JSONArray(response);
-//                                    JSONObject jObj ;
-//                                    System.out.println("2");
-//                                    // boolean error = jObj.getBoolean("error");
-//                                    System.out.println("3");
-//
-//                                    //ArrayList<helper.shopprod> shopList = new ArrayList<shopprod>();
-//                                    System.out.println("4");
-//                                    System.out.println("jsonarray" + shopList);
-//
-//
-//                                    for (int i = 0; i < x.length(); i++) {
-//
-//
-//                                        jObj = x.getJSONObject(i);
-//                                        //subjects s=new subjects(jsonObject.getString("name"),jsonObject.getString("description"),jsonObject.getString("image_url"));
-//                                        shopprod.shop_id = jObj.getString("shop_id");
-//                                        System.out.println("shopid" + shopprod.shop_id);
-//                                        shopprod.product_id = jObj.getString("product_id");
-//                                        System.out.println("productid" + shopprod.product_id);
-//                                        shopprod.price = jObj.getString("price");
-//                                        shopprod.availablespecialoffers = jObj.getString("availablespecialoffers");
-//                                        System.out.println("avaliable Spec" + shopprod.price);
-//                                        System.out.println("price" + shopprod.price);
-//
-//
-//                                        shopList.add(shopprod);
-//
-//
-//
-//
-//                                    }
-//                                    finalshopList=shopList;
-//                                   //System.out.println("List size is "+shopList.size());
-//                                    /*Bundle bundle=new Bundle();
-//                                    bundle.putSerializable("product",shopList);
-//                                    intent2.putExtras(bundle);*/
-//
-//
-//
-//
-//
-//
-//
-//                                    //startActivity(intent2);
-////                else {
-////                        // Error in login. Get the error message
-////                        String errorMsg = jObj.getString("error_msg");
-////                        Toast.makeText(getApplicationContext(),
-////                                errorMsg, Toast.LENGTH_LONG).show();
-////                    }
-//                                } catch (JSONException e) {
-//                                    // JSON error
-//                                    e.printStackTrace();
-//                                    System.out.println("Catch1");
-//                                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-//                                }
-//
-//                            }
-//                        }, new Response.ErrorListener() {
-//
-//                            @Override
-//                            public void onErrorResponse(VolleyError error) {
-//                                System.out.println("catch2");
-//                                Log.e(TAG, "Login Error: " + error.getMessage());
-//                                Toast.makeText(getApplicationContext(),
-//                                        error.getMessage(), Toast.LENGTH_LONG).show();
-//                                hideDialog();
-//                            }
-//                        }) {
-//
-//                            @Override
-//                            protected Map<String, String> getParams() {
-//                                // Posting parameters to login url
-//                                Map<String, String> params = new HashMap<String, String>();
-//                                params.put("product_id",product_id);
-//                                return params;
-//                            }
-//
-//
-//
-//                        };
-//
-//                        // Adding request to request queue
-//                        // RequestQueue rq= Volley.newRequestQueue(ProductsActivity.this);
-//                        //rq.add(strReq);
-//                        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
-//
-//                       /* if(shopList.isEmpty()){
-//                            Toast.makeText(getApplicationContext(),
-//                                    "0", Toast.LENGTH_LONG).show();
-//                        }
-//                        else{
-//                            Toast.makeText(getApplicationContext(),
-//                                    "1", Toast.LENGTH_LONG).show();
-//                        }*/
-//
-//
-//                        /*Intent intent2=new Intent(ProductsActivity.this,
-//                                DetailsActivity.class);*/
-//                        //System.out.println("List size is "+shopList.size());
-//                        startActivity(intent2);
-//                        finish();
-//                    }
-//                });
-//            }
-//        }
-//    }
-//
-//    private void showDialog() {
-//        if (!pDialog.isShowing())
-//            pDialog.show();
-//    }
-//    public void addList(shopprod shopprod){
-//        shopList.add(shopprod);
-//    }
-//
-//    private void hideDialog() {
-//        if (pDialog.isShowing())
-//            pDialog.dismiss();
-//    }
+
                     }
                 });
             }

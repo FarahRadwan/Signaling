@@ -23,6 +23,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     // Login table name
     private static final String TABLE_USER = "user";
+    private static final String TABLE_cart = "cart";
 
     // Login Table Columns names
     private static final String KEY_ID = "id";
@@ -66,7 +67,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, name); // Name
         values.put(KEY_EMAIL, email); // Email
-        values.put(KEY_UID, uid); // Email
+        values.put(KEY_UID, uid);
+       //values.put(KEY_ID, idd);// Email
 
 
 
@@ -82,6 +84,22 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Getting user data from database
      * */
+//    public void addcart(int user_id, String shopproduct_id) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//
+//        ContentValues values1 = new ContentValues();
+//        values1.put("user_id", user_id); // Name
+//        values1.put("shopproduct_id", shopproduct_id); // Email
+//
+//        // Inserting Row
+//        long id = db.insert(TABLE_cart, null, values1);
+//        db.close(); // Closing database connection
+//
+//        Log.d(TAG, "New product inserted into sqlite: " + id);
+//    }
+
+
+
     public HashMap<String, String> getUserDetails() {
         HashMap<String, String> user = new HashMap<String, String>();
         String selectQuery = "SELECT  * FROM " + TABLE_USER;
@@ -97,6 +115,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
             user.put("uid", cursor.getString(3));
 
             user.put("created_at", cursor.getString(4));
+            //user.put("id", cursor.getString(5));
+            //user.put("id")
         }
         cursor.close();
         db.close();

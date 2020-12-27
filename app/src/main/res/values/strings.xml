@@ -14,10 +14,15 @@
     <string name="btn_logout">LOGOUT</string>
     <string name="name">Fullname</string>
     <string name="hint_phoneNumber" />
+    <string name="mapbox_access_token">MAPBOX_ACCESS_TOKEN</string>
+    <string name="user_location_permission_explanation">This app needs location permissions to show its functionality.</string>
+    <string name="user_location_permission_not_granted">You didn\'t grant location permissions.</string>
     <string name="hint_Address" />
     <string name="btn_currentlocation" />
     <string name="map_key" translatable="false">AIzaSyAiZ5-TtBgufKqkySZn6aHOx2gg81O-ZMQ</string>
     <string name="title_activity_maps">Map</string>
+    <string name="sort">sort</string>
+    <string name="addshop">addshop</string>
 
 
 </resources>
